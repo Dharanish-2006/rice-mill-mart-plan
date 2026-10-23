@@ -1,0 +1,188 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Rice Mill Portal Flowchart</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: header, one tall two-lane SVG flow (shared top, Admin | User lanes, shared bottom), then a notes grid */
+:root{--bg:#f3f5f4;--card:#ffffff;--fg:#17211e;--muted:#5b6965;--line:#6d7b77;
+--admin:#0b6e66;--admin-t:#e3f1ee;--user:#a35a0c;--user-t:#f9ecd8;--shared:#2d3a4a;--hair:#d6dcd9;
+--display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171a;--card:#19232a;--fg:#e6eeeb;--muted:#9bacA7;--line:#8a9b96;--admin:#4fc1b4;--admin-t:#16302f;--user:#e8a655;--user-t:#33260f;--shared:#aebbd0;--hair:#2c3a40;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10171a;--card:#19232a;--fg:#e6eeeb;--muted:#9bacA7;--line:#8a9b96;--admin:#4fc1b4;--admin-t:#16302f;--user:#e8a655;--user-t:#33260f;--shared:#aebbd0;--hair:#2c3a40;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(26px,4vw,40px)/1.1 var(--display);margin:0;text-wrap:balance}
+header p{margin:0;max-width:65ch;color:var(--muted);font-size:15px;line-height:1.55}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.fig{margin:0;overflow-x:auto;border:1px solid var(--hair);border-radius:16px;background:var(--card);padding:12px}
+svg{display:block;width:100%;min-width:760px;max-width:1100px;height:auto;margin:0 auto;color:var(--line);font-family:var(--body)}
+figcaption{font-size:13px;color:var(--muted);padding:10px 8px 2px}
+.lane{stroke:none} .admin-lane{fill:var(--admin-t)} .user-lane{fill:var(--user-t)}
+.node .card{fill:var(--card);stroke:var(--c);stroke-width:1.6}
+.node .badge{fill:var(--c)} .node .num{font:500 13px var(--mono);fill:var(--card)}
+.node .ttl{font:700 16px var(--display);fill:var(--fg)} .node .bul{font-size:12.5px;fill:var(--muted)}
+.node.shared{--c:var(--shared)} .node.admin{--c:var(--admin)} .node.user{--c:var(--user)}
+.node.end .term{fill:var(--shared);stroke:none} .node.end .num{font:500 14px var(--mono);fill:var(--bg)}
+.chip.admin rect{fill:var(--admin)} .chip.user rect{fill:var(--user)}
+.chip text{font:500 10.5px var(--mono);letter-spacing:.08em;fill:var(--card)}
+.edge{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round} .dashed{stroke-dasharray:5 4}
+.elab{font:500 11.5px var(--mono);fill:var(--muted)}
+h2{font:700 20px var(--display);margin:0}
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:12px}
+.note{--c:var(--shared);background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:14px 16px;min-width:0}
+.note.admin{--c:var(--admin)} .note.user{--c:var(--user)}
+.note h3{font:700 15px var(--display);margin:0 0 6px;display:flex;gap:10px;align-items:center}
+.note h3 span{font:500 12px var(--mono);background:var(--c);color:var(--card);border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center}
+.note p{margin:0;font-size:13.5px;line-height:1.55;color:var(--muted)}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Flowchart V2 · screen by screen</div>
+<h1>Rice Mill Monitoring Portal</h1>
+<p>Everyone signs in the same way, then Admin and User / Worker accounts follow separate paths with different permissions, and both end at logout.</p>
+<div class="legend"><span><i style="background:var(--shared)"></i>Shared screens</span><span><i style="background:var(--admin)"></i>Admin only</span><span><i style="background:var(--user)"></i>User / Worker</span></div>
+</header>
+<figure class="fig"><svg viewBox="0 0 1100 1410" role="img" aria-label="Rice Mill Monitoring Portal flow: login, role routing, then separate Admin and User or Worker paths through dashboard, monitoring, alerts and settings, merging at logout." xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="currentColor"/></marker></defs>
+<rect class="lane admin-lane" x="85" y="326" width="380" height="772" rx="14"/>
+<rect class="lane user-lane" x="635" y="326" width="380" height="772" rx="14"/>
+<g class="chip admin"><rect x="101" y="338" width="104" height="22" rx="11"/><text x="153" y="353" text-anchor="middle">ADMIN LANE</text></g>
+<g class="chip user"><rect x="651" y="338" width="140" height="22" rx="11"/><text x="721" y="353" text-anchor="middle">USER / WORKER LANE</text></g>
+<g class="node shared"><title>Authenticates the person before access is granted. Valid credentials continue to role routing; invalid credentials show an error.</title>
+<rect class="card" x="380" y="24" width="340" height="136" rx="10"/>
+<circle class="badge" cx="408" cy="54" r="14"/>
+<text class="num" x="408" y="59" text-anchor="middle">1</text>
+<text class="ttl" x="434" y="59">Login Screen</text>
+<text class="bul" x="402" y="92">• Username / email</text>
+<text class="bul" x="402" y="109">• Password and show/hide option</text>
+<text class="bul" x="402" y="126">• Login button</text>
+<text class="bul" x="402" y="143">• Validation and error message</text>
+</g>
+<g class="node shared"><title>Sends each signed-in person to the correct dashboard and restricts admin controls to Admin accounts.</title>
+<rect class="card" x="380" y="206" width="340" height="112" rx="10"/>
+<circle class="badge" cx="408" cy="236" r="14"/>
+<text class="num" x="408" y="241" text-anchor="middle">2</text>
+<text class="ttl" x="434" y="241">Role Routing</text>
+<text class="bul" x="402" y="274">• Checks authenticated account role</text>
+<text class="bul" x="402" y="291">• Admin path</text>
+<text class="bul" x="402" y="308">• User / Worker path</text>
+</g>
+<g class="node admin"><title>Gives administrators an overview of mill operations and shortcuts to monitoring, analytics, alerts, and settings.</title>
+<rect class="card" x="105" y="400" width="340" height="136" rx="10"/>
+<circle class="badge" cx="133" cy="430" r="14"/>
+<text class="num" x="133" y="435" text-anchor="middle">3</text>
+<text class="ttl" x="159" y="435">Admin Dashboard</text>
+<text class="bul" x="127" y="468">• Plant selector</text>
+<text class="bul" x="127" y="485">• Machine running / stopped counts</text>
+<text class="bul" x="127" y="502">• Production and energy KPI cards</text>
+<text class="bul" x="127" y="519">• Recent alerts and status summary</text>
+</g>
+<g class="node admin"><title>Shows production stages in sequence and helps identify which stage is running, stopped, or needs attention.</title>
+<rect class="card" x="105" y="578" width="340" height="136" rx="10"/>
+<circle class="badge" cx="133" cy="608" r="14"/>
+<text class="num" x="133" y="613" text-anchor="middle">5</text>
+<text class="ttl" x="159" y="613">Process Overview</text>
+<text class="bul" x="127" y="646">• Receiving and Cleaning</text>
+<text class="bul" x="127" y="663">• Husking and Separation</text>
+<text class="bul" x="127" y="680">• Polishing, Grading, and Packing</text>
+<text class="bul" x="127" y="697">• Stage status and interruptions</text>
+</g>
+<g class="node admin"><title>Admin reviews abnormal conditions and configures limits that trigger warnings. Threshold editing is Admin-only.</title>
+<rect class="card" x="105" y="756" width="340" height="136" rx="10"/>
+<circle class="badge" cx="133" cy="786" r="14"/>
+<text class="num" x="133" y="791" text-anchor="middle">7</text>
+<text class="ttl" x="159" y="791">Alerts &amp; Thresholds</text>
+<text class="bul" x="127" y="824">• Active and resolved alerts</text>
+<text class="bul" x="127" y="841">• Severity, timestamp, machine, message</text>
+<text class="bul" x="127" y="858">• Alert history</text>
+<text class="bul" x="127" y="875">• Edit warning / critical thresholds</text>
+</g>
+<g class="node admin"><title>Allows administrators to maintain their account and manage portal access.</title>
+<rect class="card" x="105" y="934" width="340" height="136" rx="10"/>
+<circle class="badge" cx="133" cy="964" r="14"/>
+<text class="num" x="133" y="969" text-anchor="middle">9</text>
+<text class="ttl" x="159" y="969">Settings</text>
+<text class="bul" x="127" y="1002">• View / edit own profile</text>
+<text class="bul" x="127" y="1019">• Change password</text>
+<text class="bul" x="127" y="1036">• Add and manage worker accounts</text>
+<text class="bul" x="127" y="1053">• Account role / access management</text>
+</g>
+<g class="node user"><title>Lets workers check operational status and issues. Configuration and account-management controls are hidden.</title>
+<rect class="card" x="655" y="400" width="340" height="136" rx="10"/>
+<circle class="badge" cx="683" cy="430" r="14"/>
+<text class="num" x="683" y="435" text-anchor="middle">4</text>
+<text class="ttl" x="709" y="435">User / Worker Dashboard</text>
+<text class="bul" x="677" y="468">• Plant and machine status summary</text>
+<text class="bul" x="677" y="485">• Running, stopped, and warning indicators</text>
+<text class="bul" x="677" y="502">• Recent alerts</text>
+<text class="bul" x="677" y="519">• Monitoring-screen navigation</text>
+</g>
+<g class="node user"><title>Helps users compare energy use and production over time. Sample values are illustrative until live data is connected.</title>
+<rect class="card" x="655" y="578" width="340" height="136" rx="10"/>
+<circle class="badge" cx="683" cy="608" r="14"/>
+<text class="num" x="683" y="613" text-anchor="middle">6</text>
+<text class="ttl" x="709" y="613">Analytics</text>
+<text class="bul" x="677" y="646">• Energy-consumption trend</text>
+<text class="bul" x="677" y="663">• Machine-wise energy comparison</text>
+<text class="bul" x="677" y="680">• Production trend and distribution</text>
+<text class="bul" x="677" y="697">• Historical readings and date range</text>
+</g>
+<g class="node user"><title>Helps workers understand current problems and when they occurred. Threshold configuration is unavailable.</title>
+<rect class="card" x="655" y="756" width="340" height="136" rx="10"/>
+<circle class="badge" cx="683" cy="786" r="14"/>
+<text class="num" x="683" y="791" text-anchor="middle">8</text>
+<text class="ttl" x="709" y="791">Alerts</text>
+<text class="bul" x="677" y="824">• Active alerts and severity</text>
+<text class="bul" x="677" y="841">• Affected machine or process</text>
+<text class="bul" x="677" y="858">• Timestamp and alert message</text>
+<text class="bul" x="677" y="875">• Alert history (view only)</text>
+</g>
+<g class="node user"><title>Lets workers maintain their own account without user-management or threshold settings.</title>
+<rect class="card" x="655" y="934" width="340" height="136" rx="10"/>
+<circle class="badge" cx="683" cy="964" r="14"/>
+<text class="num" x="683" y="969" text-anchor="middle">10</text>
+<text class="ttl" x="709" y="969">Settings</text>
+<text class="bul" x="677" y="1002">• View permitted profile details</text>
+<text class="bul" x="677" y="1019">• Change own password</text>
+<text class="bul" x="677" y="1036">• Save or cancel changes</text>
+</g>
+<g class="node shared"><title>Prevents accidental sign-out. Cancel returns to the current screen; Logout ends the session and redirects to Login.</title>
+<rect class="card" x="380" y="1166" width="340" height="116" rx="10"/>
+<circle class="badge" cx="408" cy="1196" r="14"/>
+<text class="num" x="408" y="1201" text-anchor="middle">11</text>
+<text class="ttl" x="434" y="1201">Logout Confirmation</text>
+<text class="bul" x="402" y="1234">• Confirmation dialog</text>
+<text class="bul" x="402" y="1251">• Cancel button</text>
+<text class="bul" x="402" y="1268">• Logout button</text>
+</g>
+<g class="node end"><title>Closes the user journey securely. The next visit starts at the Login Screen.</title><rect class="term" x="420" y="1330" width="260" height="52" rx="26"/><text class="num" x="550" y="1361" text-anchor="middle">12 · End / Login Return</text></g>
+<path class="edge" d="M550,160 V206" marker-end="url(#arr)"/>
+<path class="edge dashed" d="M720,74 H790 V110 H720" marker-end="url(#arr)"/>
+<text class="elab" x="798" y="88">Invalid credentials:</text><text class="elab" x="798" y="102">show error, retry</text>
+<path class="edge" d="M550,318 V372 H275"/>
+<path class="edge" d="M550,372 H825"/>
+<path class="edge" d="M275,372 V400" marker-end="url(#arr)"/>
+<path class="edge" d="M825,372 V400" marker-end="url(#arr)"/>
+<text class="elab" x="538" y="366" text-anchor="end">role = Admin</text>
+<text class="elab" x="562" y="366" text-anchor="start">role = User</text>
+<path class="edge" d="M275,536 V578" marker-end="url(#arr)"/>
+<path class="edge" d="M825,536 V578" marker-end="url(#arr)"/>
+<path class="edge" d="M275,714 V756" marker-end="url(#arr)"/>
+<path class="edge" d="M825,714 V756" marker-end="url(#arr)"/>
+<path class="edge" d="M275,892 V934" marker-end="url(#arr)"/>
+<path class="edge" d="M825,892 V934" marker-end="url(#arr)"/>
+<path class="edge" d="M275,1070 V1132 H550"/>
+<path class="edge" d="M825,1070 V1132 H550"/>
+<path class="edge" d="M550,1132 V1166" marker-end="url(#arr)"/>
+<path class="edge" d="M550,1282 V1330" marker-end="url(#arr)"/>
+<text class="elab" x="562" y="1308">Logout</text>
+<text class="elab" x="562" y="1154">both roles</text>
+</svg><figcaption>Hover a screen for its purpose. Full notes are listed below.</figcaption></figure>
+<section><h2>What each screen does</h2><div class="notes"><article class="note shared"><h3><span>1</span>Login Screen</h3><p>Authenticates the person before access is granted. Valid credentials continue to role routing; invalid credentials show an error.</p></article><article class="note shared"><h3><span>2</span>Role Routing</h3><p>Sends each signed-in person to the correct dashboard and restricts admin controls to Admin accounts.</p></article><article class="note admin"><h3><span>3</span>Admin Dashboard</h3><p>Gives administrators an overview of mill operations and shortcuts to monitoring, analytics, alerts, and settings.</p></article><article class="note user"><h3><span>4</span>User / Worker Dashboard</h3><p>Lets workers check operational status and issues. Configuration and account-management controls are hidden.</p></article><article class="note admin"><h3><span>5</span>Process Overview</h3><p>Shows production stages in sequence and helps identify which stage is running, stopped, or needs attention.</p></article><article class="note user"><h3><span>6</span>Analytics</h3><p>Helps users compare energy use and production over time. Sample values are illustrative until live data is connected.</p></article><article class="note admin"><h3><span>7</span>Alerts &amp; Thresholds (Admin)</h3><p>Admin reviews abnormal conditions and configures limits that trigger warnings. Threshold editing is Admin-only.</p></article><article class="note user"><h3><span>8</span>Alerts (User / Worker)</h3><p>Helps workers understand current problems and when they occurred. Threshold configuration is unavailable.</p></article><article class="note admin"><h3><span>9</span>Settings (Admin)</h3><p>Allows administrators to maintain their account and manage portal access.</p></article><article class="note user"><h3><span>10</span>Settings (User / Worker)</h3><p>Lets workers maintain their own account without user-management or threshold settings.</p></article><article class="note shared"><h3><span>11</span>Logout Confirmation</h3><p>Prevents accidental sign-out. Cancel returns to the current screen; Logout ends the session and redirects to Login.</p></article><article class="note shared"><h3><span>12</span>End / Login Return</h3><p>Closes the user journey securely. The next visit starts at the Login Screen.</p></article></div></section>
+</div>
+
+</body></html>
